@@ -1,54 +1,64 @@
 import React, { Component } from "react";
 
 class Counter extends Component {
-  state = {
-    count: 0,
-    // imageUrl: "https://picsum.photos/13",
-  };
-  formatCount() {
-    const { count } = this.state;
-    // return count === 0 ? <h1>Zero </h1> : count;
-    // if (count == 0) {
-    //   return "zerowwwww";
-    // } else {
-    //   return "Nope";
-    // }
-    return count === 0 ? "zero" : count;
+  componentDidUpdate(prevProps, prevState) {
+    console.log("preprop", prevProps);
+    console.log("previousstate", prevState);
+    if (prevProps.counter.value !== this.props.counter.value) {
+      // ajax call from server
+    }
   }
-  //   styles = {
-  //     fontSize: 20,
-  //   };
-  render() {
-    return (
-      <div>
-        {/* <img
-          src={this.state.imageUrl}
-          className="rounded float-right"
-          alt="Responsive"
-        /> */}
-        {/* setting image attributes^^^^^ */}
-        <span className={this.classStyles()}>{this.formatCount()}</span>
-        {/* <span style={this.styles} className="badge bg-primary m-4">
-          {this.formatCount()}
-        </span> */}
-        {/* bootstrap in react^^^ */}
-        <button style={{ fontSize: 40 }} className="btn btn-danger">
-          Incremenent
-        </button>
-      </div>
-    );
+  componentWillUnmount() {
+    console.log("counter-unmount");
+  }
+  formatvalue() {
+    const { value } = this.props.counter;
+
+    return value === 0 ? "0" : value;
   }
 
   classStyles() {
     let classes = "badge m-4 bg-";
 
-    // if (this.state.count === 0) {
-    //   classes += "primary";
-    // } else {
-    //   classes += "warning";
-    // }
-    // ^^^
-    classes += this.state.count === 0 ? "warning" : "primary";
+    classes += this.props.counter.value === 0 ? "warning" : "primary";
+    return classes;
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.children}
+        <span className={this.getBadgeClasses()}>{this.formatvalue()}</span>
+
+        <button
+          onClick={() => this.props.onIncrement(this.props.counter)}
+          style={{ fontSize: 20 }}
+          className="btn btn-danger btn-sm m-2"
+        >
+          Incremenent
+        </button>
+        <button
+          onClick={() => this.props.onDecrement(this.props.counter)}
+          style={{ width: 30, fontSize: 20 }}
+          className="btn-danger btn-sm m-2"
+        >
+          -
+        </button>
+
+        <button
+          onClick={() => this.props.onDelete(this.props.counter.id)}
+          className="btn btn-danger btn-sm m-2"
+        >
+          Delete
+        </button>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+    let classes = "badge m-2 bg-";
+    // bg- helps with preventing us to repeat bg in our function below
+    classes += this.props.counter.value === 0 ? "warning" : "primary";
     return classes;
   }
 }
